@@ -1,6 +1,7 @@
 package orderNotationActivity;
 
 import java.util.Random;
+import java.util.Arrays;
 
 // Activity Readme can be found here:
 // https://docs.google.com/document/d/1UTI-1HLoBwvOo67ZwsHYjArW6qgxBYbsyiaDNri2tA0/edit?usp=sharing
@@ -14,8 +15,7 @@ public class BigODrill {
      * @return the last element of the array numArr
      */
     public static int constantTime(int[] numArr) {
-        //TODO: Add the code that returns the last element of the input array with O(1) run time
-        return numArr[numArr.length - 1]; // Placeholder to make it compile. Replace me with the correct value.
+        return numArr[numArr.length - 1]; 
     }
 
 
@@ -26,27 +26,29 @@ public class BigODrill {
      * @return the input array where each element of the array is multiplied with itself
      */
     public static int[] linearTime(int[] numArr) {
-        //TODO: Add the code to modify and return the input array with each element squared
-        // which performs in O(n)
-
-        for (element : numArr){
-            numArr[element] = element * element;
+        
+        for (int i = 0; i < numArr.length; i++){
+            numArr[i] *= numArr[i]; //just taking each element at index i and squaring it
         }
-
         return numArr;
     }
 
     /**
      * (3)
-     * Demonstrates an algorithm with TODO: What is O( ? ) of the following code?
+     * Demonstrates an algorithm with a logarithmic run time, O(n log n). 
+     * We have a coefficient of n because the size of the input array 
+     * would affect how long the halving operation (which tells us in
+     * the begining it might be O(log n)
+     * 
      * @param numArr - an integer array
      */
     public static int[] puzzle03(int[] numArr) {
-        //TODO: What does the following code do?
-        int index2 = 0;
-        int[] tempArr = new int[numArr.length];
-        for(int index = 1; index < numArr.length; index = index * 2) {
-            tempArr[index2] = numArr[index];
+        //This method halves the size of the input array by copying it into a new array and skipping indices between every i * 2. For example {9,5,3,1,7,8,2,1,5,5} -> {5,3,7,5}
+        //we start at index 1 so we can actually double index 
+        int index2 = 0; //accumulator index used to populate tempArr. The first element of the new array is the second element of the input array (b/c if we initialized at 0.. 0*2 = 0 forever)
+        int[] tempArr = new int[numArr.length]; //new array w/ same  length as input array
+        for(int index = 1; index < numArr.length; index = index * 2) { //loop from second element to end, increment by 2i (so O(log n))
+            tempArr[index2] = numArr[index]; 
             index2++;
         }
         return tempArr;
@@ -54,15 +56,28 @@ public class BigODrill {
 
     /**
      * (4)
-     * Demonstrates an algorithm with TODO: What is the O( ? ) of the following code?
+     * Demonstrates an algorithm with a quadratic run time, O(n^2)
      * @param numArr -  a two dimensional rectangular integer array a.k.a 2D matrix
      * @return a double that represents the sparsity of numArr
      */
     public static double sparsity(int[][] numArr) {
         //TODO: Write the code that calculates and returns the sparsity of the input
         // rectangular integer array numArr
-        return 0; // Placeholder to make it compile.
-
+        double zeroElements = 0;
+        
+        for (int i = 0; i < numArr.length; i++){
+            for (int j = 0; j < numArr[i].length; j++){ //Saw this is a way to loop through 2D Arrays on a YouTube video?
+                if (numArr[i][j] == 0) {
+                    // System.err.println(numArr[i][j]);
+                    
+                    zeroElements++; // looping through n elements i and j times.. so O(n^2)
+                    // System.err.println(zeroElements);
+                    // System.err.println(numArr.length * numArr[0].length);
+                }
+            }
+        }
+       
+        return ((zeroElements) / (numArr.length * numArr[0].length)); // # columns * # entries in column
     }
 
     /**
@@ -84,7 +99,16 @@ public class BigODrill {
 
 
     public static void main (String[] args){
-        //TODO: Write code to run your methods
+        int[] testArray = {1,2,3,4,5,6,7,8,9,10};
+        
+        System.out.println(constantTime(testArray)); //returns 10, this method works
+        
+        System.out.println(Arrays.toString(linearTime(testArray))); //squares each number now, this one works too. Also we need to use toString b/c otherwise it prints the address
+        
+        System.out.println(Arrays.toString(puzzle03(testArray))); //starts from index 1 and returns half the elements (in steps of i * 2). once i = 8 there's no more elements we can grab b/c i = 16 is outside of our array.
 
+        int[][] nestedArray = {{1,2,3},{0,0,0},{1,2,4}}; //syntax for just instantiating a 2D array in one line
+
+        System.out.println(sparsity(nestedArray)); //works
     }
 }
